@@ -1,4 +1,5 @@
 import re
+from dict_loader import BANGLISH_WORDS, PHONETIC_KEY_MAP, make_phonetic_key
 
 PHONETIC_FIX = {
   "bat": "bhaat",
@@ -48,6 +49,9 @@ PHONETIC_FIX = {
   "daag": "daag",
   "krishokora": "krishokra",
   "krishok ra": "krishokra",
+  "kreshok": "krishok",
+  "kreshokra": "krishokra",
+  "dichchhe": "dicche",
 
   "tu mi": "tumi",
   "kor ba": "korba",
@@ -55,52 +59,21 @@ PHONETIC_FIX = {
   "na a": "na"
 }
 
-BANGLA_DICTIONARY = {
-  # Pronouns
-  "ami", "tumi", "amra", "tomra", "se", "tara", "amar", "tomar", "apnar", "tar", "amader", "tomader", "apnader",
-  
-  # Verbs
-  "kori", "koro", "kore", "korchen", "korchi", "korechi", "korbo", "korba",
-  "khai", "khao", "khae", "khachhen", "khachhi", "kheyechi", "khabo", "khaba",
-  "jai", "jao", "jae", "jacche", "jacchi", "gechi", "jabo", "jaba",
-  "dekhi", "dekho", "dekhe", "dekhche", "dekchi", "dekhlam", "dekhbo", "dekhba", "dekha",
-  "dei", "deo", "dae", "dicchi", "diche", "dicche", "diyechi", "diyecchi", "dibo", "dibe",
-  "hobe", "hacche", "hoyeche", "achhe", "achi", "acho", "nei", "nai",
-  "parbo", "pari", "paro", "pare", "bhalobashi", "bashi",
-  
-  # Nouns & Adjectives
-  "bhaat", "pani", "gach", "gacher", "pata", "patai", "daag", "kalo", "khabar", 
-  "bari", "ghor", "sokal", "bikal", "raat", "din", "kaj", "kaaj", "mathe",
-  "school", "bazar", "taka", "poisa", "lok", "manush", "bhasha", "krishok", "krishokra",
-  "bangladesh", "bangla", "desh", "sundor", "valo", "bhalo", "kharap",
-  "lal", "nil", "sobuj", "holud", "choto", "boro", "onek", "kom", "khub",
-  
-  # Particles & Helpers
-  "ki", "kene", "keno", "kothay", "kobe", "kivabe", "kemon", "ekta",
-  "ebong", "kintu", "ar", "o", "na", "ha", "to"
-}
+BANGLA_DICTIONARY = BANGLISH_WORDS
 
 def phonetic_match(word: str) -> str:
-    lower = word.lower()
+    lower = word.lower().strip()
     if lower in PHONETIC_FIX:
         return PHONETIC_FIX[lower]
     if lower in BANGLA_DICTIONARY:
         return lower
         
-    # Specific phonetic rules rather than overly broad startsWith/endsWith patterns
+    # Specific phonetic rules
     if lower in ["kaadz", "kaaz", "kaz"]:
         return "kaaj"
     if lower in ["khai", "kai", "khae"]:
         return "khai"
     if lower in ["bhat", "bat", "vat"]:
-        return "bhaat"
-
-    # General fallback for common patterns only if they match known variations
-    if lower.startswith("ka") and ("d" in lower or "z" in lower):
-        return "kaaj"
-    if lower.endswith("ai") and (lower.startswith("k") or lower.startswith("kh")):
-        return "khai"
-    if "bha" in lower and (lower.startswith("bh") or lower.startswith("v")):
         return "bhaat"
         
     return word
@@ -135,9 +108,20 @@ def levenshtein(a: str, b: str) -> int:
 def closest_dictionary_match(word: str) -> str:
     if word in BANGLA_DICTIONARY:
         return word
+        
+    # 1. Try fast O(1) phonetic key lookup
+    key = make_phonetic_key(word)
+    if key in PHONETIC_KEY_MAP:
+        return PHONETIC_KEY_MAP[key]
+        
+    # 2. Levenshtein fallback on words of similar length to prevent high latency
     best = word
     min_dist = float('inf')
-    for dict_word in BANGLA_DICTIONARY:
+    
+    # Filter dictionary words with length diff <= 1 for efficiency
+    candidates = [w for w in BANGLA_DICTIONARY if abs(len(w) - len(word)) <= 1]
+    
+    for dict_word in candidates:
         dist = levenshtein(word, dict_word)
         if dist < min_dist:
             min_dist = dist

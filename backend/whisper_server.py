@@ -39,54 +39,14 @@ nmt_model = None
 nmt_tokenizer = None
 nmt_failed = False
 
+from dict_loader import BANGLA_TO_ENGLISH
+
 def fallback_dictionary_translate(text: str) -> str:
     """
     Translates basic Bangla phrases/words to English.
     Useful for offline, zero-dependency, or low-spec hardware setups.
     """
-    dictionary = {
-        "আমি": "I",
-        "ভাত": "rice",
-        "খাই": "eat",
-        "খাব": "will eat",
-        "খাবো": "will eat",
-        "খাচ্ছি": "am eating",
-        "খেয়েছি": "have eaten",
-        "তুমি": "you",
-        "তোমার": "your",
-        "কোথায়": "where",
-        "যাচ্ছ": "going",
-        "যাচ্ছো": "going",
-        "স্কুল": "school",
-        "স্কুলে": "to school",
-        "নাম": "name",
-        "রাহিম": "Rahim",
-        "আমার": "my",
-        "ভালো": "good",
-        "ভাল": "good",
-        "বন্ধু": "friend",
-        "বাংলাদেশ": "Bangladesh",
-        "ঢাকা": "Dhaka",
-        "সুন্দর": "beautiful",
-        "অহংকার": "pride",
-        "কেমন": "how",
-        "আছ": "are",
-        "আছো": "are",
-        "যাই": "go",
-        "যাচ্ছি": "going",
-        "যাব": "will go",
-        "আসি": "come",
-        "আসব": "will come",
-        "কাজ": "work",
-        "করছি": "doing",
-        "করো": "do",
-        "করতেছি": "doing",
-        "করতাসি": "doing",
-        "খাইসি": "have eaten",
-        "ফুরি": "girl",
-        "হানি": "water",
-        "পানি": "water"
-    }
+    dictionary = BANGLA_TO_ENGLISH
     
     words = text.split()
     translated_words = []

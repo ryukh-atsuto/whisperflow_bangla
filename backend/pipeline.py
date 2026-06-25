@@ -74,73 +74,8 @@ def normalize_bangla(text: str) -> str:
     return text
 
 
-DICTIONARY = {
-  # Pronouns
-  'আমি': 'ami',
-  'আমার': 'amar',
-  'আমাকে': 'amake',
-  'তুমি': 'tumi',
-  'তোমার': 'tomar',
-  'तोमे': 'tumi',
-  'আপনাকে': 'apnake',
-  'সে': 'se',
-  'তার': 'tar',
-  'তাকে': 'take',
-  'আমরা': 'amra',
-  'আমাদের': 'amader',
-
-  # Verbs
-  'খাই': 'khai',
-  'খাব': 'khabo',
-  'খাবো': 'khabo',
-  'করি': 'kori',
-  'করব': 'korbo',
-  'করবো': 'korbo',
-  'করছি': 'korchhi',
-  'করেছি': 'korechhi',
-  'করেছে': 'korechhe',
-  'যাই': 'jai',
-  'যাচ্ছি': 'jachhi',
-  'যাচ্ছে': 'jachhe',
-  'হবে': 'hobe',
-  'হচ্ছে': 'hochhe',
-  'হয়েছে': 'hoyeche',
-  'আসি': 'asi',
-  'দেখি': 'dekhi',
-  'দেখছি': 'dekhchhi',
-  'দেখেছি': 'dekhechhi',
-
-  # Nouns/Adjectives
-  'ভাত': 'bhaat',
-  'পানি': 'pani',
-  'বাড়ি': 'bari',
-  'বাসা': 'basha',
-  'স্কুল': 'school',
-  'কাজ': 'kaj',
-  'সময়': 'somoy',
-  'দিন': 'din',
-  'রাত': 'raat',
-  'মানুষ': 'manush',
-  'ভালো': 'bhalo',
-  'ভাল': 'bhalo',
-  'খারাপ': 'kharap',
-  'সুন্দর': 'shundor',
-  'অনেক': 'onek',
-  'কম': 'kom',
-
-  # Adverbs/Helpers
-  'এবং': 'ebong',
-  'ও': 'o',
-  'আর': 'ar',
-  'কিন্তু': 'kintu',
-  'না': 'na',
-  'হ্যাঁ': 'ha',
-  'কি': 'ki',
-  'কী': 'ki',
-  'কেন': 'keno',
-  'কোথায়': 'kothay',
-  'কেমন': 'kemon'
-}
+from dict_loader import BANGLA_TO_BANGLISH
+DICTIONARY = BANGLA_TO_BANGLISH
 
 CONSONANTS = {
   'ক': 'k', 'খ': 'kh', 'গ': 'g', 'ঘ': 'gh', 'ঙ': 'ng',
